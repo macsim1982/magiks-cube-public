@@ -1,0 +1,23 @@
+#!/bin/sh
+# Gitflow : pas de commit direct sur main / develop, noms de branche normés.
+git_dir=$(git rev-parse --git-dir)
+
+# Conclusion d'un merge en conflit : même contrôle qu'un merge sans conflit.
+if [ -f "$git_dir/MERGE_HEAD" ]; then
+  exec "$(dirname "$0")/pre-merge-commit"
+fi
+
+# HEAD détachée (rebase en cours) : rien à vérifier.
+branch=$(git symbolic-ref --short -q HEAD) || exit 0
+
+case "$branch" in
+  main|develop)
+    echo "✖ Commit direct interdit sur '$branch'. Créer une branche : git switch -c feature/<sujet>" >&2
+    exit 1
+    ;;
+esac
+
+if ! echo "$branch" | grep -Eq '^(feature/[a-z0-9][a-z0-9._-]*|release/[0-9]+\.[0-9]+\.[0-9]+|hotfix/[0-9]+\.[0-9]+\.[0-9]+)$'; then
+  echo "✖ Branche '$branch' hors convention : feature/<kebab-case>, release/x.y.z ou hotfix/x.y.z" >&2
+  exit 1
+fi

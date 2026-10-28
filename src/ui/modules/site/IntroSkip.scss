@@ -1,0 +1,34 @@
+@use '../../../styles/variables' as *;
+
+@layer modules {
+  // Intro de la première visite
+
+  // Couche au-dessus du canvas : pas de glissé ni d’orbite pendant l’intro
+  .intro {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 16px calc(24px + env(safe-area-inset-bottom));
+    touch-action: none;
+  }
+
+  .intro__skip {
+    animation: intro-skip-in 400ms $motion-emphasized 300ms both;
+  }
+
+  @keyframes intro-skip-in {
+    from {
+      opacity: 0;
+      translate: 0 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .intro__skip {
+      animation: none;
+    }
+  }
+}

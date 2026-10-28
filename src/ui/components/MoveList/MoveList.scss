@@ -1,0 +1,59 @@
+@use '../../../styles/variables' as *;
+
+@layer components {
+  .move-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .move-list--empty {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  // Bouton (on peut y aller) ou simple lettre : même boîte, même largeur
+  .move-list__token {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 2px 6px;
+    min-height: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-radius: $radius-sm;
+    box-shadow: none;
+    transition: background-color $motion-duration $motion-standard, color $motion-duration $motion-standard;
+  }
+
+  button.move-list__token {
+    cursor: pointer;
+  }
+
+  .move-list__token:hover:not(:disabled) {
+    color: var(--text);
+    background: color-mix(in srgb, var(--text) 10%, transparent);
+    border: none;
+  }
+
+  .move-list__token.is-done {
+    color: var(--muted);
+  }
+
+  .move-list__token.is-next {
+    color: var(--on-accent);
+    background: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .move-list__token {
+      transition: none;
+    }
+  }
+}

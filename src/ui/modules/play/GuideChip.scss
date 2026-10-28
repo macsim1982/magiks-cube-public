@@ -1,0 +1,23 @@
+@use '../../../styles/variables' as *;
+
+@layer modules {
+  // Jouer, après un mélange : « Comment le résoudre ? », en haut
+  .guide-chip {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    z-index: 2;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 16px 0 12px;
+    font-size: 15px;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    box-shadow: var(--elevation);
+
+    // Sous la pastille du nom : 8 + 48 px, puis 12 px d’écart
+    @media (max-width: $bp-title-row) {
+      top: 68px;
+    }
+  }
+}

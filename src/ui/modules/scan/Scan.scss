@@ -1,0 +1,359 @@
+@use '../../../styles/variables' as *;
+
+@layer modules {
+  // Scanner mon cube : carte au-dessus du cube, plein écran sur téléphone
+  .scan {
+    width: min(560px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    padding: 0;
+    overflow: auto;
+    color: var(--text);
+    background: var(--panel);
+    border: none;
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(92, 70, 30, 0.28);
+    // Fond opaque : le flou de la surface des fenêtres n’y servirait à rien
+    backdrop-filter: none;
+
+    &::backdrop {
+      background: var(--scrim);
+      backdrop-filter: blur(3px);
+    }
+
+    @media (max-width: $bp-phone) {
+      width: 100vw;
+      max-width: 100vw;
+      height: 100dvh;
+      max-height: 100dvh;
+      margin: 0;
+      border-radius: 0;
+    }
+  }
+
+  .scan .dialog__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .scan__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+  }
+
+  .scan__kicker {
+    margin: 0 0 2px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--accent-ink);
+  }
+
+  .scan__text {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  // Le cadre carré : vidéo ou photo importée, la silhouette par-dessus
+  .scan__stage {
+    position: relative;
+    width: min(100%, 52dvh);
+    aspect-ratio: 1;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #1e1c24;
+    border-radius: 20px;
+    touch-action: none;
+
+    &.is-movable {
+      cursor: grab;
+    }
+  }
+
+  .scan__view {
+    position: absolute;
+    inset: 0;
+
+    // Caméra tournée vers soi : vidéo et silhouette en miroir, ensemble
+    &.is-mirror {
+      transform: scaleX(-1);
+    }
+  }
+
+  .scan__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .scan__photo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    max-width: none;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .scan__empty {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    padding: 24px;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #fff;
+    text-align: center;
+  }
+
+  // Prise automatique : flash blanc qui s’efface, puis « Photo prise ! »
+  .scan__flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    animation: scan-flash 500ms ease-out;
+  }
+
+  @keyframes scan-flash {
+    from {
+      opacity: 0.85;
+    }
+  }
+
+  .scan__taken {
+    position: absolute;
+    right: 0;
+    bottom: 14px;
+    left: 0;
+    margin: 0;
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+
+  // Ce qu’il manque pour la prise automatique, sous le cadre
+  .scan__hint {
+    margin: 0 auto;
+    padding: 8px 14px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: center;
+    background: var(--bg);
+    border-radius: $radius-pill;
+
+    &.is-aimed,
+    &.is-hold {
+      color: #1e7a45;
+      background: color-mix(in srgb, #2f9e5b 16%, var(--panel));
+    }
+
+    &.is-taken {
+      color: var(--on-accent);
+      background: var(--accent);
+    }
+  }
+
+  .scan__zoom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+
+    input {
+      flex: 1;
+      accent-color: var(--accent-ink);
+    }
+  }
+
+  .scan__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+
+    .btn {
+      flex: 1 1 auto;
+    }
+  }
+
+  .scan__shoot {
+    flex-basis: 100%;
+  }
+
+  // Silhouette : unités du carré (0..1)
+  .scan-frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .scan-frame__outline {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 0.008;
+    stroke-linejoin: round;
+    transition: stroke $motion-duration $motion-standard;
+
+    // Cube en place : jaune ; immobile, la photo arrive : vert
+    &.is-aimed {
+      stroke: var(--accent);
+    }
+
+    &.is-hold {
+      stroke: color-mix(in srgb, #2f9e5b 45%, #fff);
+    }
+  }
+
+  .scan-frame__progress {
+    fill: none;
+    stroke: #2f9e5b;
+    stroke-width: 0.018;
+    stroke-linejoin: round;
+  }
+
+  .scan-frame__cell {
+    fill: transparent;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 0.004;
+    stroke-linejoin: round;
+
+    // Centre attendu : sa couleur, à moitié transparente
+    &.is-centre {
+      fill-opacity: 0.55;
+      stroke: #fff;
+      stroke-width: 0.006;
+    }
+  }
+
+  .scan-frame__dot {
+    stroke: #fff;
+    stroke-width: 0.004;
+  }
+
+  // Vérifier : cases peintes, à toucher pour corriger
+  .scan__review {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+
+    &.is-mirror .scan-frame {
+      transform: scaleX(-1);
+    }
+  }
+
+  .scan-frame--review {
+    position: static;
+    height: auto;
+    aspect-ratio: 1;
+    pointer-events: auto;
+
+    .scan-frame__outline {
+      stroke: var(--text);
+      stroke-width: 0.01;
+    }
+
+    .scan-frame__cell {
+      stroke: var(--text);
+      stroke-width: 0.006;
+      cursor: pointer;
+      outline: none;
+
+      &[role='img'] {
+        cursor: default;
+      }
+
+      &.is-doubtful {
+        stroke: var(--accent-ink);
+        stroke-width: 0.012;
+        stroke-dasharray: 0.02 0.012;
+      }
+
+      &.is-faulty {
+        stroke: #d1452f;
+        stroke-width: 0.016;
+        animation: scan-faulty 0.9s ease-in-out infinite alternate;
+      }
+
+      &:focus-visible,
+      &.is-selected {
+        stroke: var(--accent-ink);
+        stroke-width: 0.018;
+        stroke-dasharray: none;
+      }
+    }
+  }
+
+  @keyframes scan-faulty {
+    to {
+      stroke-opacity: 0.35;
+    }
+  }
+
+  .scan__palette {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .scan__swatch {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 3px solid var(--line);
+    border-radius: 50%;
+    cursor: pointer;
+
+    &.is-current {
+      border-color: var(--accent-ink);
+    }
+  }
+
+  .scan__verdict {
+    margin: 0;
+    padding: 10px 12px;
+    font-weight: 800;
+    line-height: 1.4;
+    border-radius: 14px;
+
+    &.is-ok {
+      color: #1e7a45;
+      background: color-mix(in srgb, #2f9e5b 16%, var(--panel));
+    }
+
+    &.is-fault {
+      color: #b2541b;
+      background: color-mix(in srgb, #e8833a 16%, var(--panel));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scan-frame--review .scan-frame__cell.is-faulty {
+      animation: none;
+    }
+  }
+}

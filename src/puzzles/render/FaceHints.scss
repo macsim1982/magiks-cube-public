@@ -1,0 +1,56 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+@layer modules {
+  .turn-readout {
+    --turn-offset: 0px;
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    margin: 0;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+    transition: opacity 600ms ease-out;
+    top: calc(50% - var(--turn-offset));
+    transform: translateY(-50%);
+
+    &.is-on {
+      opacity: 1;
+    }
+  }
+
+  .turn-readout__letter {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 5rem;
+    height: 5rem;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: $radius-lg;
+    box-shadow: var(--elevation);
+  }
+
+  .turn-readout__text {
+    position: absolute;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--text);
+    @include surface;
+    border-radius: $radius-md;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .turn-readout {
+      transition: none;
+    }
+  }
+}

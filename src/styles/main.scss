@@ -1,0 +1,13 @@
+@use 'sass:meta';
+
+// Les couches : la base, puis les composants, les modules qui les
+// ajustent, et l’app qui assemble l’écran. Ce fichier est chargé en premier
+// (main.jsx) : il fixe leur ordre. Chaque composant, chaque module importe
+// son style, rangé dans sa couche, et arrive avec son code.
+@layer base, components, modules, app;
+
+@layer base {
+  @include meta.load-css('fonts');
+  @include meta.load-css('base');
+  @include meta.load-css('typography');
+}

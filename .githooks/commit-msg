@@ -1,0 +1,16 @@
+#!/bin/sh
+# Conventional Commits : <type>(<scope>)!: <résumé>
+subject=$(head -n 1 "$1")
+
+case "$subject" in
+  "Merge "*|"Revert \""*|"fixup! "*|"squash! "*) exit 0 ;;
+esac
+
+if echo "$subject" | grep -Eq '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9-]+\))?!?: .{1,72}$'; then
+  exit 0
+fi
+
+echo "✖ Message hors Conventional Commits : '$subject'" >&2
+echo "  Attendu : <type>(<scope>): <résumé ≤ 72 car.>  ex. fix(puzzles): rebake skewb after cancel" >&2
+echo "  Voir docs/workflow/conventions.md" >&2
+exit 1

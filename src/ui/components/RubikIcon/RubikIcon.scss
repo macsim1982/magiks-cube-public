@@ -1,0 +1,177 @@
+@use '../../../styles/variables' as *;
+
+@layer components {
+  .rubik-icon {
+      --rubik-size: 64px;
+      --rubik-gap: 2px;
+      --rubik-radius: 3px;
+
+      // Le cube tourné dépasse son arête : la boîte prend toute sa place
+      width: calc(var(--rubik-size) * 1.6);
+      height: calc(var(--rubik-size) * 1.6);
+      flex: none;
+
+      display: grid;
+      place-items: center;
+
+      perspective: 600px;
+
+      &__cube {
+        position: relative;
+
+        width: var(--rubik-size);
+        height: var(--rubik-size);
+
+        transform-style: preserve-3d;
+
+        transform:
+          rotateX(var(--rubik-rotate-x))
+          rotateY(var(--rubik-rotate-y))
+          rotateZ(var(--rubik-rotate-z));
+      }
+
+      // ------------------------------------------------
+      // FACES
+      // ------------------------------------------------
+
+      &__face {
+        position: absolute;
+
+        width: var(--rubik-size);
+        height: var(--rubik-size);
+
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+
+        gap: var(--rubik-gap);
+
+        padding: var(--rubik-gap);
+
+        box-sizing: border-box;
+
+        background: $text;
+
+        backface-visibility: hidden;
+
+        &--F {
+          transform:
+            translateZ(
+              calc(var(--rubik-size) / 2)
+            );
+        }
+
+        &--R {
+          transform:
+            rotateY(90deg)
+            translateZ(
+              calc(var(--rubik-size) / 2)
+            );
+        }
+
+        &--U {
+          transform:
+            rotateX(90deg)
+            translateZ(
+              calc(var(--rubik-size) / 2)
+            );
+        }
+      }
+
+      // ------------------------------------------------
+      // STICKERS
+      // ------------------------------------------------
+
+      &__sticker {
+        min-width: 0;
+        min-height: 0;
+
+        border-radius: var(--rubik-radius);
+
+        background: $text;
+
+        // ----------------------------------------------
+        // Couleurs
+        // ----------------------------------------------
+
+        &--white {
+          background: #f8f8f8;
+        }
+
+        &--yellow {
+          background: #ffd500;
+        }
+
+        &--red {
+          background: #e53935;
+        }
+
+        &--orange {
+          background: #ff8a00;
+        }
+
+        &--blue {
+          background: #2979ff;
+        }
+
+        &--green {
+          background: #20b85a;
+        }
+
+        // ----------------------------------------------
+        // Sticker volontairement masqué
+        // ----------------------------------------------
+
+        &--hidden {
+          background: $muted;
+        }
+      }
+
+      // ------------------------------------------------
+      // FLÈCHES (coups) : dessinées sur la face, en unités de vignette (0 à 3)
+      // ------------------------------------------------
+
+      &__arrows {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        pointer-events: none;
+      }
+
+      &__arrow-halo,
+      &__arrow {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+
+        line,
+        path {
+          fill: none;
+        }
+      }
+
+      &__arrow-halo {
+        fill: $panel;
+        stroke: $panel;
+        stroke-width: 0.3;
+
+        line,
+        path {
+          stroke-width: 0.62;
+        }
+      }
+
+      &__arrow {
+        fill: $text;
+        stroke: $text;
+        stroke-width: 0.06;
+
+        line,
+        path {
+          stroke-width: 0.3;
+        }
+      }
+    }
+}

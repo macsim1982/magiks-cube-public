@@ -1,0 +1,14 @@
+@use '../../../styles/variables' as *;
+
+@layer modules {
+  .puzzle-picker {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    pointer-events: auto;
+  }
+}

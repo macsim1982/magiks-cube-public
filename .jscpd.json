@@ -1,0 +1,7 @@
+{
+  "minTokens": 40,
+  "format": ["javascript", "jsx", "scss"],
+  "ignore": ["**/vendor/**", "**/*.test.js", "**/node_modules/**"],
+  "reporters": ["console"],
+  "gitignore": true
+}

@@ -1,0 +1,70 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+@layer modules {
+  .site-menu {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    z-index: 3;
+  }
+
+  .site-menu__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding-right: 52px;
+    margin-bottom: 14px;
+    position: relative;
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+  }
+
+  .site-menu__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .site-menu__list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .site-menu__item {
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  .site-menu__section {
+    margin: 0 0 16px;
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-ink);
+    }
+
+    p {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--accent-ink);
+      font-weight: 700;
+    }
+  }
+}

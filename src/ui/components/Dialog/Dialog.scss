@@ -1,0 +1,23 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+@layer components {
+  // Fenêtre modale : surface douce, voile sombre derrière
+  .dialog {
+    width: min(440px, calc(100vw - 32px));
+    max-height: min(80vh, 640px);
+    padding: 0;
+    overflow: auto;
+    color: var(--text);
+    @include surface;
+    border-radius: 20px;
+
+    &::backdrop {
+      background: var(--scrim);
+    }
+  }
+
+  .dialog__panel {
+    padding: 18px 18px 20px;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "extends": "./jsconfig.json",
+  "compilerOptions": {
+    "checkJs": false,
+    "allowJs": true,
+    "noEmit": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "lib": ["ES2023", "DOM", "WebWorker"],
+    "types": []
+  },
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/vite-env.d.ts"],
+  "exclude": ["src/vendor", "**/*.test.js"]
+}

@@ -1,0 +1,795 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+@layer modules {
+  // Mode Apprendre : bandeau d’étape en haut, commandes en bas,
+  // carte d’explication par-dessus le cube.
+
+  .lesson-picker {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .learn {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .learn__live {
+    @include sr-only;
+  }
+
+  // --- Bandeau du haut -------------------------------------------------------
+
+  .learn-head {
+    position: fixed;
+    top: 8px;
+    // Le menu ☰ garde le coin haut droit
+    right: 68px;
+    left: 8px;
+    z-index: 3;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
+  }
+
+  .learn-head__quit {
+    flex: none;
+    box-shadow: var(--elevation);
+  }
+
+  .learn-head__chapter {
+    position: relative;
+    justify-content: flex-start;
+    gap: 8px;
+    min-width: 0;
+    // Place de ✕ à gauche et du menu ☰ à droite
+    max-width: min(420px, calc(100vw - 132px));
+    min-height: 48px;
+    padding: 4px 10px 8px;
+    overflow: hidden;
+    text-align: left;
+    box-shadow: var(--elevation);
+
+    // ≡ : la puce ouvre le parcours
+    > svg:last-of-type {
+      flex: none;
+      margin-left: auto;
+      opacity: 0.7;
+    }
+  }
+
+  // Avancée dans la leçon : étapes réussies sur toutes
+  .learn-head__progress {
+    position: absolute;
+    right: 10px;
+    bottom: 4px;
+    left: 10px;
+    height: 3px;
+
+    span {
+      transition: width $motion-duration $motion-standard;
+    }
+  }
+
+  .learn-head__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .learn-head__count {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .is-current .learn-head__count,
+  .btn-filled .learn-head__count {
+    color: inherit;
+  }
+
+  .learn-head__title {
+    overflow: hidden;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // --- Carte d’une étape ------------------------------------------
+
+  // Le cas : ‹ nom et points › ; les flèches vont au cas voisin, puis à l’étape voisine
+  .step-card__case {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+
+  .step-card__case-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .step-card__case-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    font-size: 16px;
+    font-weight: 800;
+
+    > span:not(.learn__validated) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  // Un point par cas : vert une fois réussi, cerclé pour le cas en cours
+  .step-card__dots {
+    display: flex;
+    gap: 2px;
+  }
+
+  .step-card__dot {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    &::before {
+      width: 10px;
+      height: 10px;
+      content: '';
+      background: var(--line);
+      border-radius: 50%;
+      transition: background-color $motion-duration $motion-standard, box-shadow $motion-duration $motion-standard;
+    }
+
+    &.is-done::before {
+      background: #2f9e5b;
+    }
+
+    &.is-current::before {
+      box-shadow: 0 0 0 3px var(--panel), 0 0 0 5px var(--accent-ink);
+    }
+  }
+
+  // L’étoile du défi, au bout des points des cas
+  .step-card__defi {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 18px;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    --icon-fill: transparent;
+    --icon-stroke: var(--accent-ink);
+
+    &.is-done {
+      --icon-fill: var(--accent);
+    }
+
+    &.is-current {
+      box-shadow: 0 0 0 2px var(--accent-ink);
+    }
+  }
+
+  // --- Défi -------------------------------------------------------
+
+  .challenge__chip {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 9px;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    text-transform: uppercase;
+    background: var(--text);
+    border-radius: $radius-pill;
+    --icon-fill: var(--accent);
+  }
+
+  .challenge {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .challenge__ask {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  // Un bouton par cas, son dessin au-dessus de son nom
+  .challenge__choices {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 8px;
+  }
+
+  .challenge__choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 76px;
+    padding: 8px 6px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text);
+    text-align: center;
+    cursor: pointer;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: $radius-lg;
+    transition: border-color $motion-duration $motion-standard, opacity $motion-duration $motion-standard;
+
+    &:hover:not(:disabled) {
+      border-color: var(--accent-ink);
+    }
+
+    &.is-wrong {
+      cursor: default;
+      opacity: 0.45;
+      animation: challenge-no 360ms $motion-standard;
+    }
+  }
+
+  @keyframes challenge-no {
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  // Le défi réussi : l’étape fêtée, ses étoiles en grand
+  .step-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+
+    .step-stars__star svg {
+      width: 34px;
+      height: 34px;
+    }
+  }
+
+  .step-done__kicker {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #17703d;
+    text-transform: uppercase;
+  }
+
+  .step-done__title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.15;
+  }
+
+  .step-done__actions {
+    display: flex;
+    gap: 8px;
+    align-self: stretch;
+    margin-top: 4px;
+
+    .learn__play {
+      flex: 1;
+    }
+  }
+
+  // La mission (ou le but) en deux lignes au plus : que dois-je faire ? L’astuce
+  // la remplace à la même hauteur. Mission + « Montre-moi » = la hauteur
+  // de la bulle d’À toi : le cube ne bouge pas.
+  .step-card__goal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+
+    p {
+      display: -webkit-box;
+      flex: 1 1 auto;
+      margin: 0;
+      overflow: hidden;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.3;
+      color: var(--text);
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    p.is-tip {
+      font-weight: 700;
+      color: var(--accent-ink);
+    }
+  }
+
+  .step-card__why {
+    flex: none;
+    gap: 4px;
+    min-height: 40px;
+    padding: 0 12px 0 8px;
+    font-size: 14px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  // --- Formule et bouton principal ------------------------------------------
+
+  .learn__play-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    min-height: $play-row-height;
+  }
+
+  // Toute la largeur pour la formule : les longues tiennent sans défiler
+  .learn__formula {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    height: $formula-height;
+    padding: 0 4px;
+    overflow-x: auto;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: $radius-md;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .move-list {
+      flex-wrap: nowrap;
+      margin-inline: auto;
+      gap: 2px;
+    }
+
+    // 16 px : les 14 coups d’une chaise tiennent sur un téléphone de 390 px
+    .move-list__token {
+      min-width: 21px;
+      padding: 1px 3px;
+      font-size: 16px;
+      text-align: center;
+    }
+  }
+
+  .learn__play {
+    justify-content: center;
+    min-height: $play-row-height;
+    padding: 0 16px;
+    font-size: 17px;
+    white-space: nowrap;
+    border-radius: $radius-lg;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  // --- Menu de toutes les étapes ---------------------------------------------
+
+  .learn__swatch {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px rgba(45, 42, 53, 0.25);
+  }
+
+  .learn__glyph {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+
+  .learn__menu {
+    position: relative;
+    min-width: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .step-card__dot::before,
+    .step-map__button,
+    .challenge__choice {
+      transition: none;
+      animation: none;
+    }
+  }
+
+  // --- Mode « À toi » ---------------------------------------------
+
+  // Bulle compacte : tuile, message + lettres, phrase, « Revoir »
+  .coach {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: $coach-height;
+    padding: 8px 8px 8px 10px;
+    background: var(--panel);
+    border: 2px solid var(--accent);
+    border-radius: 18px;
+
+    &.is-oops {
+      border-color: #e8833a;
+      animation: coach-shake 420ms ease-in-out;
+    }
+
+    &.is-done {
+      border-color: #2f9e5b;
+    }
+  }
+
+  .coach__tile {
+    display: grid;
+    flex: none;
+    place-items: center;
+    min-width: 48px;
+    height: 48px;
+    padding: 0 6px;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 14px;
+
+    .is-done & {
+      color: #fff;
+      background: #2f9e5b;
+    }
+  }
+
+  .coach__body {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .coach__status {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 900;
+
+    .is-oops & {
+      color: #b2541b;
+    }
+
+    .is-done & {
+      color: #1e7a45;
+    }
+  }
+
+  .coach__move {
+    margin: 2px 0 0;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  // « Revoir » et « Démo », côte à côte ; réussi : « Suivant › »
+  .coach__actions {
+    display: flex;
+    flex: none;
+    gap: 4px;
+
+    .btn-caption {
+      min-width: 56px;
+      min-height: 52px;
+      padding: 4px 6px;
+    }
+  }
+
+  .coach__next {
+    flex: none;
+    gap: 4px;
+    min-height: 48px;
+    padding: 0 10px 0 14px;
+    font-size: 15px;
+    white-space: nowrap;
+
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .coach__arrow {
+    margin-right: 4px;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  // Lettres réussies : vertes, cochées
+  .learn--practice .move-list__token.is-done {
+    color: #1e7a45;
+
+    &::after {
+      content: ' ✓';
+      font-size: 0.7em;
+    }
+  }
+
+  @keyframes coach-shake {
+    20%,
+    60% {
+      transform: translateX(-6px);
+    }
+
+    40%,
+    80% {
+      transform: translateX(6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .coach.is-oops {
+      animation: none;
+    }
+  }
+
+  // Étoile d’une étape réussie : jaune, liseré sombre
+  .learn__star {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    margin-left: 6px;
+    --icon-fill: var(--accent);
+    --icon-stroke: var(--accent-ink);
+  }
+
+  // Sur le jaune (étape en cours, puce ouverte), l’étoile passe en blanc
+  .is-current .learn__star,
+  .btn-filled .learn__star {
+    --icon-fill: var(--panel);
+  }
+
+  // --- Carte du chantier -----------------------------------------
+
+  // Plein écran sur téléphone, une colonne au centre ailleurs
+  .dialog.step-map {
+    width: min(480px, calc(100vw - 16px));
+    max-height: calc(100dvh - 16px);
+    background: var(--bg);
+  }
+
+  .step-map__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+
+    h2 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+  }
+
+  .step-map__lesson + .step-map__lesson {
+    margin-top: 18px;
+  }
+
+  // Les étapes sur un chemin : un trait relie les dessins
+  .step-map__steps {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    margin: 6px 0 0;
+    list-style: none;
+
+    &::before {
+      position: absolute;
+      top: 30px;
+      bottom: 30px;
+      left: 29px;
+      width: 4px;
+      content: '';
+      background: var(--line);
+      border-radius: 2px;
+    }
+  }
+
+  .step-map__button {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    padding: 6px 10px 6px 0;
+    font: inherit;
+    color: var(--text);
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-radius: 20px;
+    transition: background-color $motion-duration $motion-standard;
+
+    &:hover {
+      background: color-mix(in srgb, var(--text) 5%, transparent);
+    }
+  }
+
+  .step-map__picto {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(92, 70, 30, 0.1);
+  }
+
+  .step-map__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    padding-top: 4px;
+  }
+
+  .step-map__kicker {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .step-map__title {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.15;
+  }
+
+  // L’étape en cours : sur une carte, liseré jaune, avec ses cas et « Continuer »
+  .step-map__step.is-current .step-map__button {
+    background: var(--panel);
+    box-shadow: var(--elevation);
+  }
+
+  .step-map__step.is-current .step-map__picto {
+    border: 3px solid var(--accent);
+  }
+
+  .step-map__step.is-current .step-map__kicker {
+    color: var(--accent-ink);
+  }
+
+  .step-map__step.is-done .step-map__picto {
+    border: 3px solid #1f9d55;
+  }
+
+  .step-map__here {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+  }
+
+  .step-map__track {
+    display: flex;
+    flex: 1;
+    gap: 3px;
+
+    span {
+      flex: 1;
+      height: 6px;
+      background: var(--line);
+      border-radius: 3px;
+    }
+
+    .is-done {
+      background: #1f9d55;
+    }
+  }
+
+  .step-map__go {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    min-height: 44px;
+    padding: 0 14px;
+    margin-left: auto;
+    font-size: 17px;
+    font-weight: 900;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-bottom: 3px solid #d9a21c;
+    border-radius: 14px;
+  }
+
+  // Les trois étoiles : pleines une fois gagnées, en creux sinon
+  .step-stars {
+    display: inline-flex;
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .step-stars__star {
+    display: inline-grid;
+    place-items: center;
+    --icon-fill: transparent;
+    --icon-stroke: color-mix(in srgb, var(--muted) 50%, transparent);
+
+    &.is-won {
+      --icon-fill: var(--accent);
+      --icon-stroke: var(--accent-ink);
+    }
+  }
+
+  // Crédit de la méthode, au bout de sa leçon dans le menu
+  .learn__source {
+    display: block;
+    padding: 6px 12px 2px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  // Coche d’un cas réussi
+  .learn__validated {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1;
+    color: #fff;
+    background: #2f9e5b;
+    border-radius: 50%;
+  }
+}

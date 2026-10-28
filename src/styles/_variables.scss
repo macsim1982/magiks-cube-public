@@ -1,0 +1,59 @@
+// Tokens SCSS — réémis en custom properties dans :root (clair, chaud)
+$bg: #f6f0e4;
+$panel: #fffdf8;
+$line: #e7dcc8;
+$text: #2d2a35;
+$muted: #6a6474;
+$accent: #ffc93c;
+$on-accent: #2d2a35;
+// Accent lisible en texte sur fond clair (le jaune n’a pas le contraste)
+$accent-ink: #8a5a00;
+$button-bg: #f1e8d7;
+$button-hover-border: #cdbd9f;
+$scrim: rgba(45, 42, 53, 0.38);
+
+$surface-mix: 92%;
+$surface-blur: 14px;
+$elevation: 0 10px 30px rgba(92, 70, 30, 0.14);
+$motion-standard: cubic-bezier(0.4, 0, 0.2, 1);
+$motion-emphasized: cubic-bezier(0.2, 0, 0, 1);
+$motion-duration: 280ms;
+
+$font-sans: 'Nunito Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+// Le nom du site : ses seules lettres, intégrées au CSS (voir _fonts.scss)
+$font-title: 'Nunito Title', $font-sans;
+$font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+
+$tutorial-width: 420px;
+// Point de rupture : le téléphone. Au-delà, la carte flotte sous le cube
+$bp-phone: 640px;
+// Sous cette largeur, la pastille du nom (en haut à droite) ne laisse
+// pas la place à côté d’elle à ce qui est centré en haut : cela passe dessous
+$bp-title-row: 860px;
+
+// Bulle d’À toi : elle remplace la mission (ou le but) et « Montre-moi »,
+// un peu plus hauts qu’elle : le cube ne bouge pas en changeant de mode
+$coach-height: 84px;
+$formula-height: 36px;
+$play-row-height: 48px;
+$radius-sm: 8px;
+$radius-md: 14px;
+$radius-lg: 16px;
+$radius-pill: 999px;
+
+:root {
+  --bg: #{$bg};
+  --panel: #{$panel};
+  --line: #{$line};
+  --text: #{$text};
+  --muted: #{$muted};
+  --accent: #{$accent};
+  --on-accent: #{$on-accent};
+  --accent-ink: #{$accent-ink};
+  --scrim: #{$scrim};
+  --surface: color-mix(in srgb, var(--panel) #{$surface-mix}, transparent);
+  --elevation: #{$elevation};
+  --motion-standard: #{$motion-standard};
+  --motion-emphasized: #{$motion-emphasized};
+  --motion-duration: #{$motion-duration};
+}

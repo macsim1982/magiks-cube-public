@@ -1,0 +1,25 @@
+#!/bin/sh
+# Gitflow : main <- release/* | hotfix/* ; develop <- feature/* | release/* | hotfix/*
+target=$(git symbolic-ref --short -q HEAD) || exit 0
+
+case "$target" in
+  main) allowed='^(release|hotfix)/' ;;
+  develop) allowed='^(feature|release|hotfix)/' ;;
+  *) exit 0 ;;
+esac
+
+# Merge direct : git expose chaque commit fusionné en GITHEAD_<sha> (MERGE_HEAD
+# n'est pas encore écrit). Conclusion après conflit : MERGE_HEAD existe.
+sources=$(env | sed -n 's/^GITHEAD_\([0-9a-f]*\)=.*/\1/p')
+if [ -z "$sources" ]; then
+  merge_head="$(git rev-parse --git-dir)/MERGE_HEAD"
+  [ -f "$merge_head" ] && sources=$(cat "$merge_head")
+fi
+
+for sha in $sources; do
+  if ! git for-each-ref --points-at "$sha" --format='%(refname:short)' refs/heads | grep -Eq "$allowed"; then
+    echo "✖ Merge refusé dans '$target' : la source doit être une branche locale correspondant à $allowed" >&2
+    echo "  Voir docs/workflow/gitflow.md" >&2
+    exit 1
+  fi
+done

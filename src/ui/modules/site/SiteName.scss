@@ -1,0 +1,38 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+@layer modules {
+  // Le nom du site et le menu ☰
+
+  // Le nom en pastille, le menu ☰ posé dans sa marge droite. Toujours à sa
+  // place, de l’écran de chargement à la fin, sans animation
+  .site-title {
+    position: absolute;
+    top: 8px;
+    right: 14px;
+    z-index: 2;
+    @include site-name;
+    font-size: 24px;
+    line-height: 48px;
+    border-radius: 24px;
+    padding: 0 70px 0 24px;
+    background-color: var(--panel);
+    pointer-events: none;
+
+    &.is-hidden {
+      opacity: 0;
+    }
+
+    // Téléphone, Apprendre : la barre de la leçon prend le haut de l’écran
+    @media (max-width: $bp-phone) {
+      .app.is-learning & {
+        opacity: 0;
+      }
+    }
+
+    .rubik-icon {
+      display: inline-flex;
+      margin-right: 8px;
+    }
+  }
+}

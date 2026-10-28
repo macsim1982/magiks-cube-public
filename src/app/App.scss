@@ -1,0 +1,54 @@
+@use '../styles/variables' as *;
+
+// L’écran assemblé : la scène, et le chrome caché pendant l’intro
+
+@layer app {
+  .app {
+    height: 100%;
+  }
+
+  // Le canvas couvre toute la scène ; le dock et les overlays se posent dessus
+  .stage {
+    position: relative;
+    height: 100%;
+    min-width: 0;
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  // Le chrome attend la fin de l’intro, puis apparaît après le passage en couleurs.
+  // Le dock reste monté (caché) : sa hauteur sert déjà au cadrage.
+  $intro-chrome: '.dock, .puzzle-picker, .look, .site-menu';
+
+  .app.is-intro,
+  .app.is-outro {
+    #{$intro-chrome} {
+      transition:
+        opacity 450ms $motion-emphasized,
+        translate 450ms $motion-emphasized;
+    }
+  }
+
+  .app.is-intro {
+    #{$intro-chrome} {
+      pointer-events: none;
+      opacity: 0;
+      translate: 0 16px;
+    }
+  }
+
+  .app.is-outro {
+    #{$intro-chrome} {
+      transition-delay: 500ms;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .app.is-intro,
+    .app.is-outro {
+      #{$intro-chrome} {
+        transition: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,132 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+@layer modules {
+  // Accueil : trois portes. Grand écran et tablette : une ligne
+  // centrée en bas ; téléphone : panneau en bas, « Apprendre » au-dessus.
+
+  .doors {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .door {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 64px;
+    padding: 10px 14px;
+    font: inherit;
+    color: var(--text);
+    text-align: left;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: border-color $motion-duration $motion-standard, background-color $motion-duration $motion-standard;
+
+    &:hover {
+      border-color: $button-hover-border;
+    }
+  }
+
+  .door__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    color: var(--accent-ink);
+    background: color-mix(in srgb, var(--accent) 22%, var(--panel));
+    border-radius: 14px;
+  }
+
+  .door__text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .door__title {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1.15;
+  }
+
+  // Deux lignes au plus : « Étape 3 sur 8 · Les coins blancs » tient sur un téléphone
+  .door__sub {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--muted);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  // Avancée dans la leçon : étapes réussies sur toutes
+  .door__progress {
+    height: 5px;
+    margin-top: 4px;
+  }
+
+  // La porte principale : Apprendre, en jaune, avec « Continuer › »
+  .door--learn {
+    background: color-mix(in srgb, var(--accent) 26%, var(--panel));
+    border-color: var(--accent);
+
+    .door__icon {
+      color: var(--on-accent);
+      background: var(--accent);
+    }
+  }
+
+  .door__go {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 2px;
+    min-height: 40px;
+    padding: 0 6px 0 14px;
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: $radius-pill;
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 60%, var(--text));
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .door--small {
+    justify-content: center;
+  }
+
+  @media (max-width: $bp-phone) {
+    .doors {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .door--learn {
+      grid-column: 1 / -1;
+      min-height: 76px;
+    }
+
+    .door--small {
+      min-height: 56px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door {
+      transition: none;
+    }
+  }
+}

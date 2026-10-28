@@ -1,0 +1,34 @@
+#!/bin/sh
+# Refuse la suppression des branches permanentes, puis exige lint, types et tests verts.
+zero=0000000000000000000000000000000000000000
+
+while read -r _local_ref local_sha remote_ref _remote_sha; do
+  case "$remote_ref" in
+    refs/heads/main|refs/heads/develop)
+      if [ "$local_sha" = "$zero" ]; then
+        echo "✖ Suppression de '${remote_ref#refs/heads/}' interdite" >&2
+        exit 1
+      fi
+      ;;
+  esac
+done
+
+if [ -s "$HOME/.nvm/nvm.sh" ]; then
+  . "$HOME/.nvm/nvm.sh"
+  nvm use --silent >/dev/null 2>&1
+fi
+
+npm run lint --silent || {
+  echo "✖ Lint en erreur : push annulé" >&2
+  exit 1
+}
+
+npm run typecheck --silent || {
+  echo "✖ Types en erreur : push annulé" >&2
+  exit 1
+}
+
+npm test --silent || {
+  echo "✖ Tests rouges : push annulé" >&2
+  exit 1
+}

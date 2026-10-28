@@ -1,0 +1,93 @@
+@use '../../../styles/variables' as *;
+
+@layer modules {
+  .keys-help__head {
+    position: relative;
+    padding-right: 52px;
+    margin-bottom: 10px;
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+  }
+
+  .keys-help__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .keys-help__group {
+    margin: 0 0 16px;
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-ink);
+    }
+  }
+
+  .keys-help__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .keys-help__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: $radius-lg;
+  }
+
+  // Une vraie touche (<kbd>), mais l’étiquette jaune de l’aide, pas la touche de base
+  .keys-help__key {
+    margin: 0;
+    font-family: inherit;
+    border: none;
+    display: grid;
+    place-items: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    flex: none;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 10px;
+  }
+
+  .keys-help__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .keys-help__name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .keys-help__hint {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  // L’autre fiche : une tablette avec clavier, un ordi tactile
+  .keys-help__switch {
+    width: 100%;
+  }
+}

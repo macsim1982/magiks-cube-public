@@ -1,0 +1,114 @@
+@use '../../../styles/variables' as *;
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 48px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+    border: 1px solid transparent;
+    border-radius: $radius-lg;
+    cursor: pointer;
+    transition:
+      background-color $motion-duration $motion-standard,
+      border-color $motion-duration $motion-standard,
+      color $motion-duration $motion-standard,
+      box-shadow $motion-duration $motion-standard;
+
+    &:disabled {
+      opacity: 0.45;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    svg {
+      flex: none;
+    }
+  }
+
+  .btn-filled {
+    color: var(--on-accent);
+    background: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 80%, var(--text));
+    box-shadow: 0 2px 0 color-mix(in srgb, var(--accent) 60%, var(--text));
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--accent) 88%, white);
+    }
+
+    &:active:not(:disabled) {
+      background: color-mix(in srgb, var(--accent) 90%, black);
+      box-shadow: none;
+      transform: translateY(1px);
+    }
+  }
+
+  .btn-tonal {
+    color: var(--text);
+    background: var(--panel);
+    border-color: var(--line);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--panel) 88%, var(--text));
+      border-color: color-mix(in srgb, var(--panel) 88%, var(--text));
+    }
+
+    &:active:not(:disabled) {
+      background: color-mix(in srgb, var(--panel) 78%, var(--text));
+      border-color: color-mix(in srgb, var(--panel) 78%, var(--text));
+    }
+  }
+
+  .btn-outlined {
+    color: var(--text);
+    background: color-mix(in srgb, var(--panel) 70%, transparent);
+    border-color: var(--line);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--text) 8%, transparent);
+      border-color: $button-hover-border;
+    }
+
+    &:active:not(:disabled) {
+      background: color-mix(in srgb, var(--text) 14%, transparent);
+    }
+  }
+
+  .btn-icon {
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: $radius-pill;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn {
+      transition: none;
+    }
+  }
+
+  // Icône et son mot dessous : les boutons à côté du bouton principal
+  .btn-caption {
+    flex-direction: column;
+    gap: 2px;
+    min-width: 64px;
+    min-height: $play-row-height;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+    border-radius: $radius-md;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

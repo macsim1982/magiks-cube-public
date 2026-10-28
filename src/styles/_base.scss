@@ -1,0 +1,55 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+:root {
+  font-family: $font-sans;
+  font-size: 16px;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+code,
+kbd {
+  font-family: $font-mono;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.4em;
+  padding: 1px 4px;
+  margin: 0 1px;
+  text-align: center;
+  color: var(--text);
+  background: $button-bg;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+// Anneau de focus au clavier : l’encre d’accent, pas le bleu du navigateur
+:focus-visible {
+  outline: 3px solid var(--accent-ink);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  @include sr-only;
+}
